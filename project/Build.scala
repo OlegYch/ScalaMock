@@ -23,8 +23,8 @@ import Keys._
 import sbt.inc.Analysis
 
 object BuildSettings {
-  val buildVersion = "3.2.2"
-  val buildScalaVersion = "2.11.7"
+  val buildVersion = "3.3.0-PLAY25SCALAZ72"
+  val buildScalaVersion = "2.11.8"
 
   val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     organization := "org.scalamock",
@@ -34,39 +34,39 @@ object BuildSettings {
     scalacOptions in (Compile, doc) ++= Opts.doc.title("ScalaMock") ++ Opts.doc.version(buildVersion) ++ Seq("-doc-root-content", "rootdoc.txt", "-version"),
     resolvers += Resolver.sonatypeRepo("releases"),
     resolvers += Resolver.sonatypeRepo("snapshots"),
-    resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
-
-    publishTo <<= version { v =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots") 
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
-    pomIncludeRepository := { _ => false },
-    publishArtifact in Test := false,
-    pomExtra := (
-      <url>http://scalamock.org/</url>
-      <licenses>
-        <license>
-          <name>BSD-style</name>
-          <url>http://www.opensource.org/licenses/bsd-license.php</url>
-          <distribution>repo</distribution>
-        </license>
-      </licenses>
-      <scm>
-        <url>git@github.com:paulbutcher/ScalaMock.git</url>
-        <connection>scm:git:git@github.com:paulbutcher/ScalaMock.git</connection>
-      </scm>
-      <developers>
-        <developer>
-          <id>paulbutcher</id>
-          <name>Paul Butcher</name>
-          <url>http://paulbutcher.com/</url>
-        </developer>
-      </developers>),
-  
-    shellPrompt := ShellPrompt.buildShellPrompt
+    resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+//    ,
+//    publishTo <<= version { v =>
+//      val nexus = "https://oss.sonatype.org/"
+//      if (v.trim.endsWith("SNAPSHOT"))
+//        Some("snapshots" at nexus + "content/repositories/snapshots")
+//      else
+//        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+//    },
+//    pomIncludeRepository := { _ => false },
+//    publishArtifact in Test := false,
+//    pomExtra := (
+//      <url>http://scalamock.org/</url>
+//      <licenses>
+//        <license>
+//          <name>BSD-style</name>
+//          <url>http://www.opensource.org/licenses/bsd-license.php</url>
+//          <distribution>repo</distribution>
+//        </license>
+//      </licenses>
+//      <scm>
+//        <url>git@github.com:paulbutcher/ScalaMock.git</url>
+//        <connection>scm:git:git@github.com:paulbutcher/ScalaMock.git</connection>
+//      </scm>
+//      <developers>
+//        <developer>
+//          <id>paulbutcher</id>
+//          <name>Paul Butcher</name>
+//          <url>http://paulbutcher.com/</url>
+//        </developer>
+//      </developers>),
+//
+//    shellPrompt := ShellPrompt.buildShellPrompt
   )
 }
 
@@ -93,7 +93,7 @@ object ShellPrompt {
 
 object Dependencies {
   val scalatest =  "org.scalatest" %% "scalatest" % "2.2.6"
-  val specs2 = "org.specs2" %% "specs2-core" % "3.7.1"
+  val specs2 = "org.specs2" %% "specs2-core" % "3.6.6-scalaz-7.2.0"
   val reflect = "org.scala-lang" % "scala-reflect" % BuildSettings.buildScalaVersion
 
   // Specs2 and ScalaTest use different scala-xml versions

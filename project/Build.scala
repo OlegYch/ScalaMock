@@ -23,7 +23,7 @@ import Keys._
 import sbt.inc.Analysis
 
 object BuildSettings {
-  val buildVersion = "3.3.0-PLAY25SCALAZ72"
+  val buildVersion = "3.3.1-PLAY25SCALAZ72"
   val buildScalaVersion = "2.11.8"
 
   val buildSettings = Defaults.coreDefaultSettings ++ Seq(
@@ -33,8 +33,7 @@ object BuildSettings {
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature"),
     scalacOptions in (Compile, doc) ++= Opts.doc.title("ScalaMock") ++ Opts.doc.version(buildVersion) ++ Seq("-doc-root-content", "rootdoc.txt", "-version"),
     resolvers += Resolver.sonatypeRepo("releases"),
-    resolvers += Resolver.sonatypeRepo("snapshots"),
-    resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+    resolvers += Resolver.sonatypeRepo("snapshots")
 //    ,
 //    publishTo <<= version { v =>
 //      val nexus = "https://oss.sonatype.org/"
@@ -93,7 +92,10 @@ object ShellPrompt {
 
 object Dependencies {
   val scalatest =  "org.scalatest" %% "scalatest" % "2.2.6"
-  val specs2 = "org.specs2" %% "specs2-core" % "3.6.6-scalaz-7.2.0"
+  val specs2 = List(
+    "org.specs2" %% "specs2-core" % "3.6.6-scalaz-7.2.0" excludeAll ExclusionRule(organization = "org.scalaz.stream")
+    , "org.scalaz.stream" %% "scalaz-stream" % "0.8a"
+  )
   val reflect = "org.scala-lang" % "scala-reflect" % BuildSettings.buildScalaVersion
 
   // Specs2 and ScalaTest use different scala-xml versions
@@ -113,7 +115,7 @@ object ScalaMockBuild extends Build {
       publishArtifact in (Compile, packageBin) := false,
       publishArtifact in (Compile, packageSrc) := false,
       sources in Compile <<= (Seq(core, scalatestSupport, specs2Support).map(sources in Compile in _).join).map(_.flatten),
-      libraryDependencies ++= Seq(reflect, scalatest, specs2)
+      libraryDependencies ++= Seq(reflect, scalatest) ++ specs2
     )) aggregate(core, core_tests, scalatestSupport, specs2Support, examples)
 
   lazy val core = Project(
@@ -137,7 +139,7 @@ object ScalaMockBuild extends Build {
     file("frameworks/specs2"),
     settings = buildSettings ++ Seq(
       name := "ScalaMock Specs2 Support",
-      libraryDependencies += specs2
+      libraryDependencies ++= specs2
     )) dependsOn(core)
 
   lazy val core_tests = Project(
